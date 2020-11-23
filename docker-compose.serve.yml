@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  gatsby-starter-default:
+    image: ${COMPOSE_PROJECT_NAME}:stable
+    build:
+      context: ./
+      dockerfile: docker/gatsby-starter-default/serve.Dockerfile
+      args:
+        - NODE_VER=${NODE_VER}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gatsby-starter-default.entrypoints=web"
+      - "traefik.http.routers.gatsby-starter-default.rule=Host(`gatsbystarterdefault.docker`, `www.gatsbystarterdefault.docker`)"
+      - "traefik.http.services.gatsby-starter-default.loadbalancer.server.port=80"
+    volumes:
+      - node_modules_serve:/tmp/node_modules
+
+volumes:
+  node_modules_serve:

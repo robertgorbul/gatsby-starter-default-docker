@@ -1,3 +1,9 @@
+# Gatsby's default starter wrapped with Docker
+
+## Quick start
+
+## Motivation
+
 <!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
 <p align="center">
   <a href="https://www.gatsbyjs.com">

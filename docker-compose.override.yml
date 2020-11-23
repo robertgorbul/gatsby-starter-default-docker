@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  traefik:
+    image: traefik:${TRAEFIK_VER}
+    ports:
+      - 80:80
+      - ${INTERNAL_STATUS_PORT}:${INTERNAL_STATUS_PORT}
+
+  gatsby-starter-default:
+    image: ${COMPOSE_PROJECT_NAME}:latest
+    build:
+      context: ./
+      dockerfile: docker/gatsby-starter-default/dev.Dockerfile
+      args:
+        - NODE_VER=${NODE_VER}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gatsby-starter-default.entrypoints=web,socketio"
+      - "traefik.http.routers.gatsby-starter-default.rule=Host(`dev.gatsbystarterdefault.docker`, `www.dev.gatsbystarterdefault.docker`)"
+      - "traefik.http.services.gatsby-starter-default.loadbalancer.server.port=8000"
+    environment:
+      GATSBY_HOT_LOADER: ${GATSBY_HOT_LOADER}
+      INTERNAL_STATUS_PORT: ${INTERNAL_STATUS_PORT}
+      PROJECT_UID: ${PROJECT_UID}
+      PROJECT_GID: ${PROJECT_GID}
+    volumes:
+      - ./:/home/node/app
+      - node_modules:/home/node/app/node_modules
+
+volumes:
+  node_modules:
